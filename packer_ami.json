@@ -1,0 +1,46 @@
+{
+"_comment" : "Simple Packer Template using Amazon Linux ",
+  "variables": {
+    "instance_size": "t2.micro",
+    "ami_name": "ami-java-node-tomcat-build",
+    "base_ami": "ami-05c0f5389589545b7",
+    "ssh_username": "ec2-user",
+    "vpc_id": "vpc-00c73feb802a394e7",
+    "subnet_id": "subnet-066d3c49c0d86c93a"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "ap-south-1",
+      "access_key": "AKIAV2PWYSAX5VNWU22I",
+      "secret_key": "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",
+      "source_ami": "{{user `base_ami`}}",
+      "instance_type": "{{user `instance_size`}}",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_timeout": "20m",
+      "ami_name": "{{user `ami_name`}}",
+      "ssh_pty" : "true",
+      "vpc_id": "{{user `vpc_id`}}",
+      "subnet_id": "{{user `subnet_id`}}",
+      "tags": {
+        "Name": "App Name",
+        "BuiltBy": "Packer",
+        "usage": "demo"
+      }
+    }
+  ],
+  "description": "AWS image",
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo yum update -y",
+        "sudo yum install -y java-11-amazon-corretto.x86_64",
+        "sudo yum install -y nodejs",
+	"sudo yum install tomcat9 -y"
+      ]
+    }
+  ]
+}
+
+
